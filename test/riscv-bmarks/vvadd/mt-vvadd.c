@@ -36,8 +36,7 @@
 // vvadd function
 
 extern void __attribute__((noinline)) vvadd(int coreid, int ncores, size_t n, const data_t* x, const data_t* y, data_t* z);
-extern void __attribute__((noinline)) vvadd_opt1(int coreid, int ncores, size_t n, const data_t* x, const data_t* y, data_t* z);
-extern void __attribute__((noinline)) vvadd_opt2(int coreid, int ncores, size_t n, const data_t* x, const data_t* y, data_t* z);
+extern void __attribute__((noinline)) vvadd_opt(int coreid, int ncores, size_t n, const data_t* x, const data_t* y, data_t* z);
 
 //--------------------------------------------------------------------------
 // Main
@@ -52,7 +51,7 @@ void thread_entry(int cid, int nc)
    
    // First do unoptimized vvadd
    barrier(nc);
-   stats(vvadd(cid, nc, DATA_SIZE, input1_data, input2_data, results_data), barrier(nc), DATA_SIZE);
+   stats(vvadd(cid, nc, DATA_SIZE, input1_data, input2_data, results_data); barrier(nc), DATA_SIZE);
  
    if(cid == 0) {
      int res = verifyDouble(DATA_SIZE, results_data, verify_data);
@@ -66,33 +65,18 @@ void thread_entry(int cid, int nc)
    }
 
    barrier(nc);
-   stats(vvadd_opt1(cid, nc, DATA_SIZE, input1_data, input2_data, results_data), barrier(nc), DATA_SIZE);
+   stats(vvadd_opt(cid, nc, DATA_SIZE, input1_data, input2_data, results_data); barrier(nc), DATA_SIZE);
 
    if (cid == 0) {
      int res = verifyDouble(DATA_SIZE, results_data, verify_data);
      if (res) {
-       printf("Optimized vvadd1: FAIL\n");
+       printf("Optimized vvadd: FAIL\n");
        printf("Correct array:\n");
        printDoubleArray(verify_data, DATA_SIZE);
        printf("Actual array:\n");
        printDoubleArray(results_data, DATA_SIZE);
      }
-     else printf("Optimized vvadd1: SUCCESS\n");
-   }
-
-   barrier(nc);
-   stats(vvadd_opt2(cid, nc, DATA_SIZE, input1_data, input2_data, results_data), barrier(nc), DATA_SIZE);
-
-   if (cid == 0) {
-     int res = verifyDouble(DATA_SIZE, results_data, verify_data);
-     if (res) {
-       printf("Optimized vvadd2: FAIL\n");
-       printf("Correct array:\n");
-       printDoubleArray(verify_data, DATA_SIZE);
-       printf("Actual array:\n");
-       printDoubleArray(results_data, DATA_SIZE);
-     }
-     else printf("Optimized vvadd2: SUCCESS\n");
+     else printf("Optimized vvadd: SUCCESS\n");
    }
 
    barrier(nc);

@@ -37,10 +37,7 @@
 // matmul function
  
 extern void matmul(const size_t coreid, const size_t ncores, const size_t lda,  const data_t A[], const data_t B[], data_t C[] );
-extern void matmul_opt1(const size_t coreid, const size_t ncores, const size_t lda,  const data_t A[], const data_t B[], data_t C[] );
-extern void matmul_opt2(const size_t coreid, const size_t ncores, const size_t lda,  const data_t A[], const data_t B[], data_t C[] );
-extern void matmul_opt3(const size_t coreid, const size_t ncores, const size_t lda,  const data_t A[], const data_t B[], data_t C[] );
-extern void matmul_opt4(const size_t coreid, const size_t ncores, const size_t lda,  const data_t A[], const data_t B[], data_t C[] );
+extern void matmul_opt(const size_t coreid, const size_t ncores, const size_t lda,  const data_t A[], const data_t B[], data_t C[] );
 
 //--------------------------------------------------------------------------
 // Main
@@ -51,8 +48,9 @@ extern void matmul_opt4(const size_t coreid, const size_t ncores, const size_t l
 void thread_entry(int cid, int nc)
 {
    static data_t results_data[ARRAY_SIZE];
+
    barrier(nc);
-   stats(matmul(cid, nc, DIM_SIZE, input1_data, input2_data, results_data), barrier(nc), DIM_SIZE * DIM_SIZE * DIM_SIZE);
+   stats(matmul(cid, nc, DIM_SIZE, input1_data, input2_data, results_data); barrier(nc), DIM_SIZE * DIM_SIZE * DIM_SIZE);
  
    if (cid == 0) {
      int res = verify(ARRAY_SIZE, results_data, verify_data);
@@ -63,60 +61,18 @@ void thread_entry(int cid, int nc)
        results_data[i] = 0;
    }
 
-
    barrier(nc);
-   stats(matmul_opt1(cid, nc, DIM_SIZE, input1_data, input2_data, results_data), barrier(nc), DIM_SIZE * DIM_SIZE * DIM_SIZE);
+   stats(matmul_opt(cid, nc, DIM_SIZE, input1_data, input2_data, results_data); barrier(nc), DIM_SIZE * DIM_SIZE * DIM_SIZE);
 
    if (cid == 0) {
      int res = verify(ARRAY_SIZE, results_data, verify_data);
      if (res) {
-       printf("Optimized matmul1: FAIL\n");
+       printf("Optimized matmul: FAIL\n");
        printf("Correct matrix:\n");
        printMatrix(verify_data, DIM_SIZE, DIM_SIZE);
        printf("Actual matrix:\n");
        printMatrix(results_data, DIM_SIZE, DIM_SIZE);
-     } else printf("Optimized matmul1: SUCCESS\n");
-   }
-   barrier(nc);
-   stats(matmul_opt2(cid, nc, DIM_SIZE, input1_data, input2_data, results_data), barrier(nc), DIM_SIZE * DIM_SIZE * DIM_SIZE);
-
-   if (cid == 0) {
-     int res = verify(ARRAY_SIZE, results_data, verify_data);
-     if (res) {
-       printf("Optimized matmul2: FAIL\n");
-       printf("Correct matrix:\n");
-       printMatrix(verify_data, DIM_SIZE, DIM_SIZE);
-       printf("Actual matrix:\n");
-       printMatrix(results_data, DIM_SIZE, DIM_SIZE);
-     } else printf("Optimized matmul2: SUCCESS\n");
-   }
-
-   barrier(nc);
-   stats(matmul_opt3(cid, nc, DIM_SIZE, input1_data, input2_data, results_data), barrier(nc), DIM_SIZE * DIM_SIZE * DIM_SIZE);
-
-   if (cid == 0) {
-     int res = verify(ARRAY_SIZE, results_data, verify_data);
-     if (res) {
-       printf("Optimized matmul3: FAIL\n");
-       printf("Correct matrix:\n");
-       printMatrix(verify_data, DIM_SIZE, DIM_SIZE);
-       printf("Actual matrix:\n");
-       printMatrix(results_data, DIM_SIZE, DIM_SIZE);
-     } else printf("Optimized matmul3: SUCCESS\n");
-   }
-
-   barrier(nc);
-   stats(matmul_opt4(cid, nc, DIM_SIZE, input1_data, input2_data, results_data), barrier(nc), DIM_SIZE * DIM_SIZE * DIM_SIZE);
-
-   if (cid == 0) {
-     int res = verify(ARRAY_SIZE, results_data, verify_data);
-     if (res) {
-       printf("Optimized matmul4: FAIL\n");
-       printf("Correct matrix:\n");
-       printMatrix(verify_data, DIM_SIZE, DIM_SIZE);
-       printf("Actual matrix:\n");
-       printMatrix(results_data, DIM_SIZE, DIM_SIZE);
-     } else printf("Optimized matmul4: SUCCESS\n");
+     } else printf("Optimized matmul: SUCCESS\n");
    }
 
    barrier(nc);
